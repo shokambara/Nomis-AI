@@ -1164,10 +1164,12 @@
                 const sum = times.reduce((a, b) => a + b, 0);
                 const mean = sum / times.length;
                 const stdDev = Math.sqrt(times.map(x => Math.pow(x - mean, 2)).reduce((a, b) => a + b, 0) / times.length);
+                
+                const isCompletelyInvalid = times.every(time => time === 999);
 
                 return {
                     name: area,
-                    fairScore: stdDev,
+                    fairScore: isCompletelyInvalid ? Infinity : stdDev,
                     shortestScore: sum,
                     times: times,
                 };
@@ -1279,19 +1281,22 @@
             const budgetText = budget === Infinity ? '8001円以上' : `1人あたり${budgetLower}円から${budgetUpper}円`;
 
             const prompt = `
-                あなたは首都圏の飲食店に詳しいコンシェルジュです。
+                あなたは首都圏の飲食店に詳しいAIコンシェルジュです。
                 以下の条件に合う最高の飲食店を3軒提案してください。
                 - エリア: "${area}"
                 - 予算: ${budgetText}
                 - ${situationText}
                 - ${genreText}
 
+                【重要】もし全ての条件に完璧に合致するお店が見つからない場合は、条件を1つか2つ緩和して（例えば、ジャンルや予算を近しいものにするなど）、最も近い候補を提案してください。その際、どの条件を緩和したかを "recommend_point" の中で「※ご指定の〇〇の条件を少し広げて探しました。」のように必ず言及してください。
+                絶対に「見つかりませんでした」とは回答せず、必ず3軒の候補を提案してください。
+
                 回答はJSONオブジェクト形式で、"recommendations"というキーを持つ配列を必ず含めてください。配列には3つの店舗オブジェクトを入れてください。
                 配列の最初のオブジェクトが、あなたの最もおすすめする「最適解」です。
                 各店舗オブジェクトには、以下の情報を必ず含めてください。
                 - "name": 店名 (string)
                 - "catch_copy": 魅力的なキャッチコピー (string)
-                - "recommend_point": おすすめポイントの説明 (string)
+                - "recommend_point": おすすめポイントの説明 (string)。条件を緩和した場合はその旨を記載。
                 - "budget_min": 予算下限 (number)
                 - "budget_max": 予算上限 (number)
                 - "tags": { "smoking": "禁煙/分煙/喫煙可" (string), "options": ["個室あり"など] (array of strings) } を含むオブジェクト
@@ -1357,7 +1362,7 @@
         }
         
         async function findAndDisplayRestaurants() {
-            showLoader(true, 'AIが最適なお店を解析中...');
+            showLoader(true, 'AIが最適なお店を解析中... (最大30秒ほどかかります)');
             restaurantResultsContainer.innerHTML = '';
             noRestaurantFoundMsg.style.display = 'none';
 
