@@ -1,0 +1,21 @@
+{
+  "name": "Nomis-AI",
+  "short_name": "Nomis-AI",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#1A1A1D",
+  "theme_color": "#1A1A1D",
+  "description": "飲み会の『最適解』を、一瞬で。面倒な飲み会の店選びを瞬時に解決するアプリです。",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

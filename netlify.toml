@@ -1,0 +1,18 @@
+# Netlifyのデプロイ設定
+[build]
+  # 公開するディレクトリを指定
+  publish = "/"
+  # ビルドコマンドは不要（静的サイトのため）
+  command = ""
+
+# リダイレクト/リライトルール (このアプリでは特に不要ですが、例として記載)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Netlify Functionsの設定
+[functions]
+  # Functionsファイルが格納されているディレクトリを指定
+  directory = "netlify/functions/"
+
